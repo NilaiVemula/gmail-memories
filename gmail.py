@@ -1,29 +1,45 @@
-from flask import Flask, url_for, session
-from flask import render_template, redirect
-from authlib.integrations.flask_client import OAuth
+# import the required libraries
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import pickle
+import os.path
 import base64
+import email
 from bs4 import BeautifulSoup
 
-app = Flask(__name__)
-app.secret_key = '!secret'
-app.config.from_object('config')
+# Define the SCOPES. If modifying it, delete the token.pickle file.
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
-CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
-oauth = OAuth(app)
-oauth.register(
-    name='google',
-    server_metadata_url=CONF_URL,
-    client_kwargs={
-        'scope': 'openid email profile https://www.googleapis.com/auth/gmail.readonly'
-    }
-)
 
-def get_emails(token):
+def getEmails():
+    # Variable creds will store the user access token.
+    # If no valid token found, we will create one.
+    creds = None
+
+    # The file token.pickle contains the user access token.
+    # Check if it exists
+    if os.path.exists('token.pickle'):
+
+        # Read the token from the file and store it in the variable creds
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+
+    # If credentials are not available or are invalid, ask the user to log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+
+        # Save the access token in token.pickle file for the next run
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
     # Connect to the Gmail API
-    service = build('gmail', 'v1', credentials=token['access_token'])
+    service = build('gmail', 'v1', credentials=creds)
 
     # request a list of all the messages
     result = service.users().messages().list(userId='me').execute()
@@ -74,40 +90,4 @@ def get_emails(token):
             pass
 
 
-
-@app.route('/')
-def homepage():
-    user = session.get('user')
-    token = session.get('token')
-    if user:
-        print(user)
-        print(token)
-        emails = get_emails(token)
-        
-
-    return render_template('home.html', user=user)
-
-
-@app.route('/login')
-def login():
-    redirect_uri = url_for('auth', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
-
-
-@app.route('/auth')
-def auth():
-    token = oauth.google.authorize_access_token()
-    user = oauth.google.parse_id_token(token)
-    session['user'] = user
-    session['token'] = token
-    return redirect('/')
-
-
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    return redirect('/')
-
-
-if __name__ == '__main__':
-    app.run()
+getEmails()
