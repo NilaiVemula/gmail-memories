@@ -23,13 +23,13 @@ def index():
     if google_auth.is_logged_in():
         return flask.render_template('list.html', user_info=google_auth.get_user_info())
 
-    return render_template('root.html')
+    return render_template('index.html')
 
 
 @app.route('/emails')
 def emails():
     labels = gmail_auth.get_emails()
-    return labels
+    return "<p> got labels successfully! </p>"
 
 
 if __name__ == '__main__':
