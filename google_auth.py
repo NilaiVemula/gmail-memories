@@ -1,9 +1,8 @@
-from flask import Flask, request
+from flask import Blueprint, request, url_for
 import functools
 import os
 
 import flask
-from flask import url_for
 
 from authlib.integrations.requests_client import OAuth2Session
 import google.oauth2.credentials
@@ -21,7 +20,7 @@ CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
 
-app = flask.Blueprint('google_auth', __name__)
+app = Blueprint('google_auth', __name__)
 
 
 def is_logged_in():
