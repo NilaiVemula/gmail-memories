@@ -1,10 +1,10 @@
-# gmail-memories
+# Gmail Memories
 
 **Author:** Nilai Vemula
 
 **Goal:** Allow a user to log in with gmail and show them a list of emails they received from exactly one year ago
 
-**Date:** 2/6/2021
+**Date:** 2/6/2021 - 2/7/2021
 
 [Live Version on Heroku](https://gmail-memories.herokuapp.com/)
 
