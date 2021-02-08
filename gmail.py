@@ -43,6 +43,7 @@ def get_emails():
     except HTTPError as e:
         print('Error response status code : {0}, reason : {1}'.format(
             e.resp.status, e.error_details))
+        return []
 
     # get list of message ids from the api response
     messages = list(response["messages"])
