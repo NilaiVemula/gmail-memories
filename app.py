@@ -20,8 +20,8 @@ def index():
 
 @app.route('/emails')
 def emails():
-    labels = gmail.get_emails()
-    return "<p> got labels successfully! </p>"
+    email_data = gmail.get_emails()
+    return render_template('emails.html', emails = email_data)
 
 
 if __name__ == '__main__':

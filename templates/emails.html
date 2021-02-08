@@ -1,0 +1,11 @@
+<h1>Gmail Memories</h1>
+<h2> got emails successfully! </h2>
+
+{% for dict_item in emails %}
+    <div>
+   {% for key, value in dict_item.items() %}
+      <p>{{key}}: {{value}}</p>
+   {% endfor %}
+   </div>
+   <hr>
+{% endfor %}
