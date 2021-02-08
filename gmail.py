@@ -36,7 +36,7 @@ def get_emails():
 
     # generate the gmail api request (get list of messages from one year ago)
     request = service.users().messages().list(userId='me', q=query_string)
-    
+
     # try to get the api response
     try:
         response = request.execute()
@@ -84,14 +84,14 @@ def get_emails():
                             base64_message = response["payload"]["body"]["data"]
                         except (KeyError, TypeError, IndexError) as e:
                             base64_message = "Ti9B"
-            
-            # decode the email body 
+
+            # decode the email body
             email["body"] = base64.urlsafe_b64decode(
                 base64_message).decode('utf-8')
 
             # populate list with email
             data_to_display.append(email)
-        
+
         except HTTPError as e:
             print('Error response status code : {0}, reason : {1}'.format(
                 e.resp.status, e.error_details))

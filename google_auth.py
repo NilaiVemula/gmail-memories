@@ -66,7 +66,7 @@ def no_cache(view):
 @app.route('/login')
 @no_cache
 def login():
-    BASE_URI = request.url_root[:-1] # remove the last /
+    BASE_URI = request.url_root[:-1]  # remove the last /
 
     AUTH_REDIRECT_URI = BASE_URI + url_for('google_auth.auth')
 
