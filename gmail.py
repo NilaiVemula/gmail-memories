@@ -9,6 +9,8 @@ from google_auth import build_credentials, get_user_info
 
 import base64
 
+from datetime import date, datetime, timedelta
+
 
 app = Blueprint('gmail', __name__)
 
@@ -20,8 +22,15 @@ def build_gmail_api_v1():
 
 def get_emails():
     service = build_gmail_api_v1()
-    date_string = 'after:2020/02/05 before:2020/02/10'
-    request = service.users().messages().list(userId='me', q=date_string)
+
+    today = date.today()
+    one_year_ago = today - timedelta(days=365.25)
+    start = one_year_ago - timedelta(days=1)
+    end = one_year_ago + timedelta(days=1)
+    start_string = start.strftime("%Y/%m/%d")
+    end_string = end.strftime("%Y/%m/%d")
+    query_string = f'after:{start_string} before:{end_string}'
+    request = service.users().messages().list(userId='me', q=query_string)
     try:
         response = request.execute()
     except HTTPError as e:
@@ -48,10 +57,6 @@ def get_emails():
             for header in headers:
                 if header["name"] in looking_for:
                     email[header["name"]] = header["value"]
-
-            #email["Subject"] = response["payload"]["headers"][3]["value"]
-            #email["From"] = response["payload"]["headers"][4]["value"]
-            #email["To"] = response["payload"]["headers"][5]["value"]
 
             try:
 

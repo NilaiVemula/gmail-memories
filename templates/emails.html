@@ -1,25 +1,22 @@
 <h1>Gmail Memories</h1>
-<h2> got emails successfully! </h2>
+<h2>got emails successfully!</h2>
 
 <div>
-    <a href="/logout">logout here when you are done</a>
+  <a href="/logout">logout here when you are done</a>
 </div>
 
+<hr />
+
 {% for dict_item in emails %}
-    <div>
-   {% for key, value in dict_item.items() %}
-    {% if key == "body" %}
-        <div>
-            <iframe srcdoc="{{value}}" width="500" height="500"></iframe>
-        </div>
+<div>
+  {% for key, value in dict_item.items() %} {% if key == "body" %}
+  <div>
+    <iframe srcdoc="{{value}}" width="500" height="500"></iframe>
+  </div>
 
-        
-    {% else %}
-        <p>{{key}}: {{value}}</p>
-    {% endif %}
-
-      
-   {% endfor %}
-   </div>
-   <hr>
+  {% else %}
+  <p>{{key}}: {{value}}</p>
+  {% endif %} {% endfor %}
+</div>
+<hr />
 {% endfor %}
