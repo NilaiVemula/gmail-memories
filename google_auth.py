@@ -13,7 +13,7 @@ AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=of
 
 AUTHORIZATION_SCOPE = 'openid email profile https://www.googleapis.com/auth/gmail.readonly'
 
-
+# credentials from google
 CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 
@@ -66,17 +66,18 @@ def no_cache(view):
 @app.route('/login')
 @no_cache
 def login():
-    BASE_URI = request.url_root[:-1]
+    BASE_URI = request.url_root[:-1] # remove the last /
 
     AUTH_REDIRECT_URI = BASE_URI + url_for('google_auth.auth')
-    print(AUTH_REDIRECT_URI)
+
+    # start an oauth2 session
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
-    print(session)
 
     uri, state = session.create_authorization_url(AUTHORIZATION_URL)
 
+    # save login to session
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
 

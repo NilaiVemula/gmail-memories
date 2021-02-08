@@ -2,9 +2,10 @@ from flask import Flask, render_template
 
 import google_auth
 import gmail
+import os
 
 app = Flask(__name__)
-app.secret_key = '!secret'
+app.secret_key = os.getenv('FLASK_SECRET')
 
 app.register_blueprint(google_auth.app)
 app.register_blueprint(gmail.app)
@@ -21,7 +22,7 @@ def index():
 @app.route('/emails')
 def emails():
     email_data = gmail.get_emails()
-    return render_template('emails.html', emails = email_data)
+    return render_template('emails.html', emails=email_data)
 
 
 if __name__ == '__main__':
